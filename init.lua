@@ -65,6 +65,9 @@ dofile(MP .. "/privileges.lua")
 dofile(MP .. "/config.lua")
 dofile(MP .. "/functions.lua")
 dofile(MP .. "/commands.lua")
+local interface = dofile(MP .. "/interface.lua")
+interface.register()
+
 
 -- Log
 if minetest.settings:get_bool("log_mods") then
