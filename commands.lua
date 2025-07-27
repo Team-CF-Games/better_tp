@@ -20,54 +20,34 @@ USA
 
 local S = tp.S
 
-minetest.register_chatcommand("tpr", {
-	description = S("Request teleport to another player"),
-	params = S("<playername> | leave playername empty to see help message"),
+minetest.register_chatcommand("tp_vers", {
+	description = S("Demander à se téléporter vers un autre joueur"),
+	params = S("<nom_du_joueur> | laisser vide pour voir le message d'aide"),
 	privs = {interact = true, tp = true},
 	func = tp.tpr_send
 })
 
-minetest.register_chatcommand("tphr", {
-	description = S("Request player to teleport to you"),
-	params = S("<playername> | leave playername empty to see help message"),
+minetest.register_chatcommand("tp_invite", {
+	description = S("Demander à un joueur de se téléporter vers vous"),
+	params = S("<nom_du_joueur> | laisser vide pour voir le message d'aide"),
 	privs = {interact = true, tp = true},
 	func = tp.tphr_send
 })
 
-minetest.register_chatcommand("tpc", {
-	description = S("Teleport to coordinates"),
-	params = S("<coordinates> | leave coordinates empty to see help message"),
-	privs = {interact = true, tp_tpc = true, tp = true},
-	func = tp.tpc_send
-})
-
-minetest.register_chatcommand("tpj", {
-	description = S("Teleport to relative position"),
-	params = S("<axis> <distance> | leave empty to see help message"),
-	privs = {interact = true, tp_tpc = true, tp = true},
-	func = tp.tpj
-})
-
-minetest.register_chatcommand("tpe", {
-	description = S("Evade Enemy"),
-	privs = {interact = true, tp_tpc = true, tp = true},
-	func = tp.tpe
-})
-
-minetest.register_chatcommand("tpy", {
-	description = S("Accept teleport requests from another player"),
+minetest.register_chatcommand("tp_accepter", {
+	description = S("Accepter une demande de téléportation"),
 	privs = {interact = true, tp = true},
 	func = tp.tpr_accept
 })
 
-minetest.register_chatcommand("tpn", {
-	description = S("Deny teleport requests from another player"),
+minetest.register_chatcommand("tp_refuser", {
+	description = S("Refuser une demande de téléportation"),
 	privs = {interact = true, tp = true},
 	func = tp.tpr_deny
 })
 
-minetest.register_chatcommand("tpf", {
-	description = S("Show all teleport requests, made by you or to you, that are still active"),
+minetest.register_chatcommand("tp_liste", {
+	description = S("Afficher toutes les demandes de téléportation actives (envoyées ou reçues)"),
 	privs = {interact = true, tp = true},
 	func = function(player)
 		tp.tpf_update_time[player] = true
@@ -75,16 +55,16 @@ minetest.register_chatcommand("tpf", {
 	end
 })
 
-minetest.register_chatcommand("tpr_mute", {
-	description = S("Mutes a player: denies them from sending you teleport requests"),
-	params = S("<playername> | leave playername empty to see help message"),
+minetest.register_chatcommand("tp_bloquer", {
+	description = S("Bloquer un joueur : empêche ses demandes de téléportation"),
+	params = S("<nom_du_joueur> | laisser vide pour voir le message d'aide"),
 	privs = {interact = true, tp = true},
 	func = tp.tpr_mute
 })
 
-minetest.register_chatcommand("tpr_unmute", {
-	description = S("Unmutes a player: allow them to send you teleport requests again"),
-	params = S("<playername> | leave playername empty to see help message"),
+minetest.register_chatcommand("tp_debloquer", {
+	description = S("Débloquer un joueur : autoriser à nouveau ses demandes"),
+	params = S("<nom_du_joueur> | laisser vide pour voir le message d'aide"),
 	privs = {interact = true, tp = true},
 	func = tp.tpr_unmute
 })
