@@ -1,3 +1,11 @@
+# Better TP
+Better TP est basé sur Teleport Request.
+Il ajoute le privilège Better TP plutôt que le privilège TP de base.
+Il traduit également en francais toutes les commandes et messages.
+Il ajoute une interface pour se téléporter.
+
+Ci-dessous la description originale.
+
 # Teleport Request
 
 [![LuaCheck status](https://github.com/minetest-mods/teleport-request/workflows/luacheck/badge.svg)](https://github.com/minetest-mods/teleport-request/actions)
