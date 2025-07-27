@@ -13,3 +13,6 @@
 [Robbie Ferguson](https://github.com/Cat5TV) ([CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)):
 
 - [`tpr_portal_parti.png`](https://github.com/minetest-mods/teleport-request/blob/HEAD/textures/tpr_portal_parti.png)
+
+## Fork BetterTP
+[Team CF Games](https://github.com/Team-CF-Games) - Fork, translation of commands and messages into French, and addition of a teleportation interface.
