@@ -23,32 +23,32 @@ local S = tp.S
 minetest.register_chatcommand("tp_vers", {
 	description = S("Demander à se téléporter vers un autre joueur"),
 	params = S("<nom_du_joueur> | laisser vide pour voir le message d'aide"),
-	privs = {interact = true, tp = true},
+	privs = {interact = true, better_tp = true},
 	func = tp.tpr_send
 })
 
 minetest.register_chatcommand("tp_invite", {
 	description = S("Demander à un joueur de se téléporter vers vous"),
 	params = S("<nom_du_joueur> | laisser vide pour voir le message d'aide"),
-	privs = {interact = true, tp = true},
+	privs = {interact = true, better_tp = true},
 	func = tp.tphr_send
 })
 
 minetest.register_chatcommand("tp_accepter", {
 	description = S("Accepter une demande de téléportation"),
-	privs = {interact = true, tp = true},
+	privs = {interact = true, better_tp = true},
 	func = tp.tpr_accept
 })
 
 minetest.register_chatcommand("tp_refuser", {
 	description = S("Refuser une demande de téléportation"),
-	privs = {interact = true, tp = true},
+	privs = {interact = true, better_tp = true},
 	func = tp.tpr_deny
 })
 
 minetest.register_chatcommand("tp_liste", {
 	description = S("Afficher toutes les demandes de téléportation actives (envoyées ou reçues)"),
-	privs = {interact = true, tp = true},
+	privs = {interact = true, better_tp = true},
 	func = function(player)
 		tp.tpf_update_time[player] = true
 		tp.list_requests(player)
@@ -58,13 +58,13 @@ minetest.register_chatcommand("tp_liste", {
 minetest.register_chatcommand("tp_bloquer", {
 	description = S("Bloquer un joueur : empêche ses demandes de téléportation"),
 	params = S("<nom_du_joueur> | laisser vide pour voir le message d'aide"),
-	privs = {interact = true, tp = true},
+	privs = {interact = true, better_tp = true},
 	func = tp.tpr_mute
 })
 
 minetest.register_chatcommand("tp_debloquer", {
 	description = S("Débloquer un joueur : autoriser à nouveau ses demandes"),
 	params = S("<nom_du_joueur> | laisser vide pour voir le message d'aide"),
-	privs = {interact = true, tp = true},
+	privs = {interact = true, better_tp = true},
 	func = tp.tpr_unmute
 })
