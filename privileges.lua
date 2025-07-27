@@ -20,20 +20,14 @@ USA
 
 local S = tp.S
 
-minetest.register_privilege("tp", {
-	description = S("Let players teleport to other players (request will be sent)"),
+minetest.register_privilege("better_tp", {
+	description = "Permet aux joueurs de demander une téléportation vers un autre joueur",
 	give_to_singleplayer = false,
 	give_to_admin = true,
 })
 
 minetest.register_privilege("tp_admin", {
 	description = S("Gives full admin-access to a player."),
-	give_to_singleplayer = false,
-	give_to_admin = true,
-})
-
-minetest.register_privilege("tp_tpc", {
-	description = S("Allow player to teleport to coordinates (if allowed by area protection)"),
 	give_to_singleplayer = false,
 	give_to_admin = true,
 })
