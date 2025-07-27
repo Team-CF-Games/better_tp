@@ -101,35 +101,35 @@ function tp.accept_request(id)
 	if request.direction == "area" then
 		source = minetest.get_player_by_name(request.receiver)
 		target = minetest.get_player_by_name(request.sender)
-		chatmsg = S("@1 is teleporting to your protected area @2.", request.sender, minetest.pos_to_string(tpc_target_coords[request.receiver]))
+		chatmsg = S("@1 se téléporte dans vtre zone protégée @2.", request.sender, minetest.pos_to_string(tpc_target_coords[request.receiver]))
 		-- If source or target are not present, abort request.
 		if not source or not target then
-			send_message(request.receiver, S("@1 is not online right now.", request.sender))
+			send_message(request.receiver, S("@1 n'est pas en ligne.", request.sender))
 			return
 		end
 		if not tpc_target_coords[request.receiver] then
 			tpc_target_coords[request.sender] = old_tpc_target_coords[request.receiver]
 			tp.tpp_teleport_player(request.sender, tpc_target_coords[request.sender])
 
-			chatmsg = S("@1 is teleporting to your protected area @2.", request.sender, minetest.pos_to_string(tpc_target_coords[request.sender]))
+			chatmsg = S("@1 se téléporte dans votre zone protégée @2.", request.sender, minetest.pos_to_string(tpc_target_coords[request.sender]))
 		else
 			tp.tpp_teleport_player(request.sender, tpc_target_coords[request.receiver])
-			chatmsg = S("@1 is teleporting to your protected area @2.", request.sender, minetest.pos_to_string(tpc_target_coords[request.receiver]))
+			chatmsg = S("@1 se téléporte dans votre zone protégée @2.", request.sender, minetest.pos_to_string(tpc_target_coords[request.receiver]))
 		end
 
 		send_message(request.receiver, chatmsg)
-		send_message(request.sender, S("Request Accepted!"))
+		send_message(request.sender, S("Demande acceptée !"))
 
 		-- Avoid abusing with area requests
 		target_coords = nil
 	elseif request.direction == "receiver" then
 		source = minetest.get_player_by_name(request.receiver)
 		target = minetest.get_player_by_name(request.sender)
-		chatmsg = S("@1 is teleporting to you.", request.sender)
+		chatmsg = S("@1 se téléporte vers vous.", request.sender)
 		-- Could happen if either player disconnects (or timeout); if so just abort
 		if not source
 		or not target then
-			send_message(request.receiver, S("@1 is not online right now.", request.sender))
+			send_message(request.receiver, S("@1 n'est pas en ligne", request.sender))
 			return
 		end
 
@@ -141,21 +141,21 @@ function tp.accept_request(id)
 		send_message(request.receiver, chatmsg)
 
 		if minetest.check_player_privs(request.sender, {tp_admin = true}) == false then
-			send_message(request.sender, S("Request Accepted!"))
+			send_message(request.sender, S("Demande acceptée !"))
 		else
 			if tp.enable_immediate_teleport then return end
 
-			send_message(request.sender, S("Request Accepted!"))
+			send_message(request.sender, S("Demande acceptée"))
 			return
 		end
 	elseif request.direction == "sender" then
 		source = minetest.get_player_by_name(request.sender)
 		target = minetest.get_player_by_name(request.receiver)
-		chatmsg = S("You are teleporting to @1.", request.sender)
+		chatmsg = S("Vous vous téléportez vers @1.", request.sender)
 		-- Could happen if either player disconnects (or timeout); if so just abort
 		if not source
 		or not target then
-			send_message(request.receiver, S("@1 is not online right now.", request.sender))
+			send_message(request.receiver, S("@1 n'est pas en ligne.", request.sender))
 			return
 		end
 
@@ -167,11 +167,11 @@ function tp.accept_request(id)
 		send_message(request.receiver, chatmsg)
 
 		if minetest.check_player_privs(request.sender, {tp_admin = true}) == false then
-			send_message(request.sender, S("Request Accepted!"))
+			send_message(request.sender, S("Demande acceptée !"))
 		else
 			if tp.enable_immediate_teleport then return end
 
-			send_message(request.sender, S("Request Accepted!"))
+			send_message(request.sender, S("Demande acceptée !"))
 			return
 		end
 	end
@@ -181,24 +181,25 @@ end
 function tp.deny_request(id, own)
 	local request = tp.clear_request(id)
 	if own then
-		send_message(request.sender, S("You denied your request sent to @1.", request.receiver))
-		send_message(request.receiver, S("@1 denied their request sent to you.", request.sender))
+		send_message(request.sender, S("Vous avez refusé votre demande envoyée à @1.", request.receiver))
+		send_message(request.receiver, S("@1 a refusé sa demande envoyée vers vous.", request.sender))
 	else
 		if request.direction == "area" then
-			send_message(request.sender, S("Area request denied."))
-			send_message(request.receiver, S("You denied the request @1 sent you.", request.sender))
+			send_message(request.sender, S("Demande d'accès à la zone refusée."))
+			send_message(request.receiver, S("Vous avez refusé la demande envoyée par @1.", request.sender))
 			spam_prevention[request.receiver] = request.sender
 		elseif request.direction == "receiver" then
-			send_message(request.sender, S("Teleport request denied."))
-			send_message(request.receiver, S("You denied the request @1 sent you.", request.sender))
+			send_message(request.sender, S("Demande de téléportation refusée."))
+			send_message(request.receiver, S("Vous avez refusé la demande envoyée par @1.", request.sender))
 			spam_prevention[request.receiver] = request.sender
 		elseif request.direction == "sender" then
-			send_message(request.sender, S("Teleport request denied."))
-			send_message(request.receiver, S("You denied the request @1 sent you.", request.sender))
+			send_message(request.sender, S("Demande de téléportation refusée."))
+			send_message(request.receiver, S("Vous avez refusé la demande envoyée par @1.", request.sender))
 			spam_prevention[request.receiver] = request.sender
 		end
 	end
 end
+
 
 function tp.list_requests(playername)
 	local sent_requests = tp.get_requests(playername, "sender")
@@ -207,7 +208,7 @@ function tp.list_requests(playername)
 
 	local formspec
 	if sent_requests.count == 0 and received_requests.count == 0 and area_requests.count == 0 then
-		formspec = ("size[5,2]label[1,0.3;%s:]"):format(S("Teleport Requests"))
+		formspec = ("size[5,2]label[1,0.3;%s:]"):format(S("Teleport Requetst"))
 		formspec = formspec..("label[1,1.2;%s]"):format(S("You have no requests."))
 	else
 		local y = 1
@@ -441,115 +442,112 @@ end
 -- Mutes a player from sending you teleport requests
 function tp.tpr_mute(player, muted_player)
 	if muted_player == "" then
-		send_message(player, S("Usage: /tpr_mute <player>"))
+		send_message(player, S("Utilisation : /tp_bloquer <nom du joueur>"))
 		return
 	end
 
 	if not minetest.get_player_by_name(muted_player) then
-		send_message(player, S("There is no player by that name. Keep in mind this is case-sensitive, and the player must be online."))
+		send_message(player, S("Aucun joueur avec ce nom. Notez que la casse compte et que le joueur doit être en ligne."))
 		return
 	end
 
 	if minetest.check_player_privs(muted_player, {tp_admin = true}) and not minetest.check_player_privs(player, {server = true}) then
-		send_message(player, S("tpr_mute: Failed to mute player @1: they have the tp_admin privilege.", muted_player))
+		send_message(player, S("tp_bloquer : Échec du blocage du joueur @1 : il a le privilège tp_admin.", muted_player))
 		return
 	end
 
 	if muted_players[player] == muted_player then
-		send_message(player, S("tpr_mute: Player @1 is already muted.", muted_player))
+		send_message(player, S("tp_bloquer : Le joueur @1 est déjà bloqué.", muted_player))
 		return
 	end
 
 	muted_players[player] = muted_player
-	send_message(player, S("tpr_mute: Player @1 successfully muted.", muted_player))
+	send_message(player, S("tp_bloquer : Le joueur @1 a bien été bloqué.", muted_player))
 end
 
 -- Unmutes a player from sending you teleport requests
 function tp.tpr_unmute(player, muted_player)
 	if muted_player == "" then
-		send_message(player, S("Usage: /tpr_unmute <player>"))
+		send_message(player, S("Utilisation : /tp_debloquer <nom du joueur>"))
 		return
 	end
 
 	if not minetest.get_player_by_name(muted_player) then
-		send_message(player, S("There is no player by that name. Keep in mind this is case-sensitive, and the player must be online."))
+		send_message(player, S("Aucun joueur avec ce nom. Notez que la casse compte et que le joueur doit être en ligne."))
 		return
 	end
 
 	if muted_players[player] ~= muted_player then
-		send_message(player, S("tpr_mute: Player @1 is not muted yet.", muted_player))
+		send_message(player, S("tp_bloquer : Le joueur @1 n'est pas bloqué.", muted_player))
 		return
 	end
 
 	muted_players[player] = nil
-	send_message(player, S("tpr_mute: Player @1 successfully unmuted.", muted_player))
+	send_message(player, S("tp_bloquer : Le joueur @1 a bien été débloqué.", muted_player))
 end
 
 -- Teleport Request System
 function tp.tpr_send(sender, receiver)
-	-- Disallow entering inaccessible areas. (Teleportation includes a position offset of 1)
 	if sender == receiver then
-		send_message(sender, S("You cannot send a teleport request to yourself."))
+		send_message(sender, S("Vous ne pouvez pas envoyer une demande de téléportation à vous-même."))
 		return
 	end
 
-	-- Check if the sender is muted
 	if muted_players[receiver] == sender and not minetest.check_player_privs(sender, {server = true}) then
-		send_message(sender, S("Cannot send request to @1 (you have been muted).", receiver))
+		send_message(sender, S("Impossible d'envoyer une demande à @1 (vous avez été bloqué).", receiver))
 		return
 	end
 
 	if receiver == "" then
-		send_message(sender, S("Usage: /tpr <Player name>"))
+		send_message(sender, S("Utilisation : /tp_vers <nom du joueur>"))
 		return
 	end
 
 	if not minetest.get_player_by_name(receiver) then
-		send_message(sender, S("There is no player by that name. Keep in mind this is case-sensitive, and the player must be online"))
+		send_message(sender, S("Aucun joueur avec ce nom. Notez que la casse compte et que le joueur doit être en ligne."))
 		return
 	end
 
-	-- Spam prevention
 	if spam_prevention[receiver] == sender and not minetest.check_player_privs(sender, {tp_admin = true}) then
-		send_message(sender, S("Wait @1 seconds before you can send teleport requests to @2 again.", tp.timeout_delay, receiver))
+		send_message(sender, S("Attendez @1 secondes avant de pouvoir renvoyer une demande à @2.", tp.timeout_delay, receiver))
 
 		minetest.after(tp.timeout_delay, function(sender_name, receiver_name)
 			spam_prevention[receiver_name] = nil
 			if band == true then return end
 
 			if spam_prevention[receiver_name] == nil then
-				send_message(sender_name, S("You can now send teleport requests to @1.", receiver_name))
+				send_message(sender_name, S("Vous pouvez maintenant envoyer des demandes de téléportation à @1.", receiver_name))
 				band = true
 			end
 		end, sender, receiver)
 	else
-	-- Compatibility with beerchat
+		-- Compatibilité avec beerchat
 		if minetest.get_modpath("beerchat") and not minetest.check_player_privs(sender, {tp_admin = true}) then
 			if receiver == "" then
-				send_message(sender, S("Usage: /tpr <Player name>"))
+				send_message(sender, S("Utilisation : /tp_vers <nom du joueur>"))
 				return
 			end
 
 			if not minetest.get_player_by_name(receiver) then
-				send_message(sender, S("There is no player by that name. Keep in mind this is case-sensitive, and the player must be online"))
+				send_message(sender, S("Aucun joueur avec ce nom. Notez que la casse compte et que le joueur doit être en ligne."))
 				return
 			end
 
 			local player_receiver = minetest.get_player_by_name(receiver)
 			if player_receiver:get_meta():get_string("beerchat:muted:" .. sender) == "true" then
-				send_message(sender, S("You are not allowed to send requests because you're muted."))
+				send_message(sender, S("Vous n'êtes pas autorisé à envoyer des demandes car vous êtes bloqué."))
 				return
 			end
 		end
 
 		if minetest.check_player_privs(sender, {tp_admin = true}) and tp.enable_immediate_teleport then
 			if receiver == "" then
-				send_message(sender, S("Usage: /tpr <Player name>"))
+				send_message(sender, S("Utilisation : /tp_vers <nom du joueur>"))
 				return
 			end
 
 			if not minetest.get_player_by_name(receiver) then
-				send_message(sender, S("There is no player by that name. Keep in mind this is case-sensitive, and the player must be online"))
+				send_message(sender, S("Aucun joueur avec ce nom. Notez que la casse compte et que le joueur doit être en ligne."))
 				return
 			end
 
@@ -559,34 +557,33 @@ function tp.tpr_send(sender, receiver)
 		end
 
 		if receiver == "" then
-			send_message(sender, S("Usage: /tpr <Player name>"))
+			send_message(sender, S("Utilisation : /tp_vers <nom du joueur>"))
 			return
 		end
 
 		if not minetest.get_player_by_name(receiver) then
-			send_message(sender, S("There is no player by that name. Keep in mind this is case-sensitive, and the player must be online"))
+			send_message(sender, S("Aucun joueur avec ce nom. Notez que la casse compte et que le joueur doit être en ligne."))
 			return
 		end
 
-		if minetest.get_modpath("gamehub") then -- Compatibility with gamehub (UNTESTED)
+		if minetest.get_modpath("gamehub") then -- Compatibilité avec gamehub (NON TESTÉ)
 			if gamehub.players[receiver] then
-				send_message(sender, S("Teleport request denied, player is in the gamehub!"))
+				send_message(sender, S("Demande de téléportation refusée, le joueur est dans le gamehub !"))
 				return
 			end
 		end
 
-		send_message(receiver, S("@1 is requesting to teleport to you. /tpy to accept.", sender))
-		send_message(sender, S("Teleport request sent! It will timeout in @1 seconds.", tp.timeout_delay))
+		send_message(receiver, S("@1 vous demande de venir vous téléporter. Tapez /tp_accepter pour accepter.", sender))
+		send_message(sender, S("Demande de téléportation envoyée ! Elle expirera dans @1 secondes.", tp.timeout_delay))
 
 		local tp_id = tp.make_request(sender, receiver, "receiver")
 
-		-- Teleport timeout delay
 		minetest.after(tp.timeout_delay, function(id)
 			if request_list[id] then
 				local request = tp.clear_request(id)
 
-				send_message(request.sender, S("Request timed-out."))
-				send_message(request.receiver, S("Request timed-out."))
+				send_message(request.sender, S("La demande a expiré."))
+				send_message(request.receiver, S("La demande a expiré."))
 				return
 			end
 		end, tp_id)
@@ -596,36 +593,36 @@ end
 function tp.tphr_send(sender, receiver)
 	-- Disallow entering inaccessible areas. (Teleportation includes a position offset of 1)
 	if sender == receiver then
-		send_message(sender, S("You cannot send a teleport request to yourself."))
+		send_message(sender, S("Vous ne pouvez pas vous envoyer de demande a vous même !"))
 		return
 	end
 
 	-- Check if the sender is muted
 	if muted_players[receiver] == sender and not minetest.check_player_privs(sender, {server = true}) then
-		send_message(sender, S("Cannot send request to @1 (you have been muted).", receiver))
+		send_message(sender, S("Vous ne pouvez pas envoyer de demande à @1 (vous avez été bloqué)", receiver))
 		return
 	end
 
 	if receiver == "" then
-		send_message(sender, S("Usage: /tphr <Player name>"))
+		send_message(sender, S("Utilisation : /tp_invite <nom du joueur>."))
 		return
 	end
 
 	if not minetest.get_player_by_name(receiver) then
-		send_message(sender, S("There is no player by that name. Keep in mind this is case-sensitive, and the player must be online."))
+		send_message(sender, S("Aucun joueur de ce nom. Notez que le joueur doit être en ligne, et attention aux majuscules."))
 		return
 	end
 
 	-- Spam prevention
 	if spam_prevention[receiver] == sender and not minetest.check_player_privs(sender, {tp_admin = true}) then
-		send_message(sender, S("Wait @1 seconds before you can send teleport requests to @2 again.", tp.timeout_delay, receiver))
+		send_message(sender, S("Attendez @1 secondes avant de pouvoir envoyer de nouvelles demandes à @2.", tp.timeout_delay, receiver))
 
 		minetest.after(tp.timeout_delay, function(sender_name, receiver_name)
 			spam_prevention[receiver_name] = nil
 			if band == true then return end
 
 			if spam_prevention[receiver_name] == nil then
-				send_message(sender_name, S("You can now send teleport requests to @1.", receiver_name))
+				send_message(sender_name, S("Vous pouvez maintenant envoyer des demandes à @1.", receiver_name))
 				band = true
 			end
 		end, sender, receiver)
@@ -633,58 +630,58 @@ function tp.tphr_send(sender, receiver)
 	-- Compatibility with beerchat
 		if minetest.get_modpath("beerchat") and not minetest.check_player_privs(sender, {tp_admin = true}) then
 			if receiver == "" then
-				send_message(sender, S("Usage: /tphr <Player name>"))
+				send_message(sender, S("Utilisation : /tp_invite <nom du joueur>."))
 				return
 			end
 
 			if not minetest.get_player_by_name(receiver) then
-				send_message(sender, S("There is no player by that name. Keep in mind this is case-sensitive, and the player must be online."))
+				send_message(sender, S("Aucun joueur de ce nom. Notez que le joueur doit être en ligne, et attention aux majuscules"))
 				return
 			end
 
 			local player_receiver = minetest.get_player_by_name(receiver)
 			if player_receiver:get_meta():get_string("beerchat:muted:" .. sender) == "true" then
-				send_message(sender, S("You are not allowed to send requests because you're muted."))
+				send_message(sender, S("Vous ne pouvez pas envoyer de demande car vous êts bloqué !"))
 				return
 			end
 		end
 
 		if minetest.check_player_privs(sender, {tp_admin = true}) and tp.enable_immediate_teleport then
 			if receiver == "" then
-				send_message(sender, S("Usage: /tphr <Player name>"))
+				send_message(sender, S("Utilisation : /tp_invite <nom du joueur>."))
 				return
 			end
 
 			if not minetest.get_player_by_name(receiver) then
-				send_message(sender, S("There is no player by that name. Keep in mind this is case-sensitive, and the player must be online."))
+				send_message(sender, S("Aucun joueur de ce nom. Notez que le joueur doit être en ligne, et attention aux majuscules"))
 				return
 			end
 
 			tp.tphr_list[receiver] = sender
 			tp.tpr_accept(receiver)
-			send_message(sender, S("@1 is teleporting to you.", receiver))
+			send_message(sender, S("@1 se téléporte vers vous.", receiver))
 			return
 		end
 
 		if receiver == "" then
-			send_message(sender, S("Usage: /tphr <Player name>"))
+			send_message(sender, S("Utilisation : /tp_invite <nom du joueur>"))
 			return
 		end
 
 		if not minetest.get_player_by_name(receiver) then
-			send_message(sender, S("There is no player by that name. Keep in mind this is case-sensitive, and the player must be online."))
+			send_message(sender, S("Aucun joueur de ce nom. Notez que le joueur doit être en ligne et attention aux majuscules."))
 			return
 		end
 
 		if minetest.get_modpath("gamehub") then -- Compatibility with gamehub (UNTESTED)
 			if gamehub.players[receiver] then
-				send_message(sender, S("Teleport request denied, player is in the gamehub!"))
+				send_message(sender, S("Demande de téléportation refusée, le joueur est dans le gamehub."))
 				return
 			end
 		end
 
-		send_message(receiver, S("@1 is requesting that you teleport to them. /tpy to accept; /tpn to deny.", sender))
-		send_message(sender, S("Teleport request sent! It will timeout in @1 seconds.", tp.timeout_delay))
+		send_message(receiver, S("@1 souhaite se téléporter vers vous. Faites /tp_accepter pour accepter ou /tp_refuser pour refuser.", sender))
+		send_message(sender, S("Demande envoyée ! Elle expire dans @1 secondes..", tp.timeout_delay))
 
 		local tp_id = tp.make_request(sender, receiver, "sender")
 
@@ -693,99 +690,19 @@ function tp.tphr_send(sender, receiver)
 			if request_list[id] then
 				local request = tp.clear_request(id)
 
-				send_message(request.sender, S("Request timed-out."))
-				send_message(request.receiver, S("Request timed-out."))
+				send_message(request.sender, S("Temps  écoulé."))
+				send_message(request.receiver, S("Temps écoulé."))
 				return
 			end
 		end, tp_id)
 	end
 end
 
-function tp.tpc_send(sender, coordinates)
-	local posx,posy,posz = string.match(coordinates, "^(-?%d+), (-?%d+), (-?%d+)$")
-	local pname = minetest.get_player_by_name(sender)
 
-	if posx ~= nil or posy ~= nil or posz ~= nil then
-		posx = tonumber(posx) + 0.0
-		posy = tonumber(posy) + 0.0
-		posz = tonumber(posz) + 0.0
-	end
-
-	if posx==nil or posy==nil or posz==nil or string.len(posx) > 6 or string.len(posy) > 6 or string.len(posz) > 6 then
-		send_message(sender, S("Usage: /tpc <x, y, z>"))
-		return nil
-	end
-
-	target_coords = {x=posx, y=posy, z=posz}
-
-	if tp.can_teleport(target_coords) == false then
-		send_message(sender, S("You cannot teleport to a location outside the map!"))
-		return nil
-	end
-
-	-- If the area is protected, reject the user's request to teleport to these coordinates
-	-- Admin user (priv "tp_admin") overrides all protection
-	if minetest.check_player_privs(pname, {tp_admin = true}) then
-		tp.tpc_teleport_player(sender)
-		target_coords = nil
-		send_message(sender, S("Teleporting to: @1, @2, @3", posx, posy, posz))
-	else
-		if minetest.check_player_privs(pname, {tp_tpc = true}) then
-			local protected = minetest.is_protected(target_coords, sender)
-			if protected then
-				if minetest.get_modpath("areas") then
-					for _, area in pairs(areas:getAreasAtPos(target_coords)) do
-						if minetest.get_player_by_name(area.owner) then -- Check if area owners are online
-
-							if tpc_target_coords then
-								old_tpc_target_coords = tpc_target_coords
-								old_tpc_target_coords[area.owner] = tpc_target_coords[area.owner]
-
-								tpc_target_coords[area.owner] = {x=posx, y=posy, z=posz}
-							else
-								tpc_target_coords = {x=posx, y=posy, z=posz}
-								tpc_target_coords[area.owner] = {x=posx, y=posy, z=posz}
-							end
-
-							send_message(sender, S("Area request sent! Waiting for @1 to accept your request." ..
-							" It will timeout in @2 seconds.", table.concat(areas:getNodeOwners(tpc_target_coords[area.owner]), S(", or ")), tp.timeout_delay))
-							send_message(area.owner, S("@1 is requesting to teleport to a protected area" ..
-							" of yours @2.", sender, minetest.pos_to_string(tpc_target_coords[area.owner])))
-
-							local tp_id = tp.make_request(sender, area.owner, "area")
-
-							minetest.after(tp.timeout_delay, function(id)
-								if request_list[id] then
-									local request = tp.clear_request(id)
-
-									send_message(request.sender, S("Request timed-out."))
-									send_message(request.receiver, S("Request timed-out."))
-									return
-								end
-							end, tp_id)
-						else
-							minetest.record_protection_violation(target_coords, sender)
-						end
-					end
-				else
-					minetest.record_protection_violation(target_coords, sender)
-				end
-				return
-			end
-
-			tp.tpc_teleport_player(sender)
-			target_coords = nil
-			send_message(sender, S("Teleporting to: @1, @2, @3", posx, posy, posz))
-		else
-			send_message(sender, S("Error: You do not have permission to teleport to those coordinates."))
-			return
-		end
-	end
-end
 
 function tp.tpr_deny(name)
 	if tp.count_requests(name, "sender") == 0 and tp.count_requests(name, "receiver") == 0 then
-		send_message(name, S("Usage: /tpn allows you to deny teleport/area requests sent to you by other players."))
+		send_message(name, S("Utilisation : /tp_refuser permet de refuser les demandes de téléportation."))
 		return
 	end
 
@@ -813,7 +730,7 @@ end
 function tp.tpr_accept(name)
 	-- Check to prevent constant teleporting
 	if tp.count_requests(name, "receiver") == 0 then
-		send_message(name, S("Usage: /tpy allows you to accept teleport/area requests sent to you by other players."))
+		send_message(name, S("Utilisation : /tp_accepter permet d'accepter des demandes de téléportation."))
 		return
 	end
 
@@ -831,110 +748,3 @@ function tp.tpr_accept(name)
 	tp.accept_request(received_request)
 end
 
--- Teleport Jump - Relative Position Teleportation by number of nodes
-function tp.tpj(player, param)
-	if param == "" then
-		send_message(player, S("Usage: <x|y|z> <number>"))
-		return false
-	end
-
-	local args = param:split(" ") -- look into this. Can it crash if the player does not have two parameters?
-	if #args < 2 then
-		send_message(player, S("Usage: <x|y|z> <number>"))
-		return false
-	end
-
-	if not tonumber(args[2]) then
-		send_message(player, S("Not a number!"))
-		return false, S("Not a number!")
-	end
-
-	-- Initially generate the target coords from the player's current position (since it's relative) and then perform the math.
-	target_coords = minetest.get_player_by_name(player):get_pos()
-	if args[1] == "x" then
-		target_coords["x"] = target_coords["x"] + tonumber(args[2])
-	elseif args[1] == "y" then
-		target_coords["y"] = target_coords["y"] + tonumber(args[2])
-	elseif args[1] == "z" then
-		target_coords["z"] = target_coords["z"] + tonumber(args[2])
-	else
-		send_message(player, S("Not a valid axis. Valid options are X, Y or Z"))
-		return
-	end
-
-	if tp.can_teleport(target_coords) == false then
-		send_message(player, S("You cannot teleport to a location outside the map!"))
-		return
-	end
-	tp.tpc_teleport_player(player)
-
-	-- Avoid abusing with area requests
-	target_coords = nil
-end
-
--- Evade
-function tp.tpe(player)
-	send_message(player, S("EVADE!"))
-	local mindistance = 15
-	local maxdistance = 50
-	local times = math.random(6,20) -- how many times to jump - minimum,maximum
-	local negatives = { '-','' } -- either it's this way or that way: the difference between -10 and 10
-	local options = { 'x', 'y', 'z' }
-	local isnegative = ''
-	local distance = 0
-	local axis = ''
-	local iteration = 0
-	for i = 1,times do
-		-- do this every 1 second
-		minetest.after(iteration,
-			function()
-				isnegative = negatives[math.random(2)] -- choose randomly whether this is this way or that
-				distance = isnegative .. math.random(mindistance,maxdistance) -- the distance to jump
-				axis = options[math.random(3)]
-				local command = axis .. " " .. distance
-				tp.tpj(player, command)
-			end
-		)
-		iteration = iteration + 0.5
-	end
-end
-
--- Teleport To Place (TPP) system.
-if tp.enable_tpp_command then
-	function tp.tpp(player, param)
-		-- Show the available places to the player (taken from shivajiva101's POI mod, thanks!).
-		if param == "" then
-			local places = {}
-			if not tp.available_places then tp.available_places = {} end
-			for key, value in pairs(tp.available_places) do
-				send_message(player, key)
-				table.insert(places, key)
-			end
-			if #places == 0 then
-				send_message(player, S("There are no places yet."))
-				return true, S("There are no places yet.")
-			end
-				send_message(player, S("Usage: /tpp <place>"))
-				table.insert(places, S("Usage: /tpp <place>"))
-				return true, table.concat(places, "\n")
-
-		-- Teleport player to the specified place (taken from shivajiva101's POI mod, thanks!).
-		elseif tp.available_places[param] then
-			local pos = {x = tp.available_places[param].x, y = tp.available_places[param].y, z = tp.available_places[param].z}
-			tp.tpp_teleport_player(player, pos)
-			send_message(player, S("Teleporting to @1.", param))
-
-		-- Check if the place exists.
-		elseif not tp.available_places[param] then
-			send_message(player, S("There is no place by that name. Keep in mind this is case-sensitive."))
-			return
-		end
-	end
-
-	minetest.register_chatcommand("tpp", {
-		description = S("Teleport to a place (i.e., spawn, shop)."),
-		params = S("<place> | leave empty to see available places"),
-		privs = {},
-		func = tp.tpp
-	})
-end
