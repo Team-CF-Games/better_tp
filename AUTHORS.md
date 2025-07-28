@@ -15,4 +15,4 @@
 - [`tpr_portal_parti.png`](https://github.com/minetest-mods/teleport-request/blob/HEAD/textures/tpr_portal_parti.png)
 
 ## Fork BetterTP
-[Team CF Games](https://github.com/Team-CF-Games) - Fork, translation of commands and messages into French, and addition of a teleportation interface.
+[Lulu-76450](https://github.com/Creatif-France-Games) - Fork, translation of commands and messages into French, and addition of a teleportation interface.
